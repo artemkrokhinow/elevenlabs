@@ -10,6 +10,31 @@ const voices = [
     },
      {   'name': 'Alice',
         'voiceId': 'Xb7hH8MSUJpSbSDYk0k2',
+        
+    },
+    {   'name': 'Jessica',
+        'voiceId': 'cgSgspJ2msm6clMCkdW9',
+        
+    },
+    {   'name': 'Brian',
+        'voiceId': 'nPczCjzI2devNBz1zQrb',
+        
+    },
+    {   'name': 'Lily',
+        'voiceId': 'pFZP5JQG7iQjIQuC4Bku',
+        
+    },
+    {   'name': 'Bill',
+        'voiceId': 'pqHfZKP75CvOlQylNhV4',
+        
+    },
+    {   'name': 'Harry',
+        'voiceId': 'SOYHLrjzK2X1ezoPC6cr',
+        
+    },
+    {   'name': 'Eric',
+        'voiceId': 'cjVigY5qzO86Huf0OWal',
+        
     },
 ]
 export default voices

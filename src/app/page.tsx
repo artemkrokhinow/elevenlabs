@@ -2,28 +2,30 @@
 import Languages from "./array/Languages";
 import voices from "./array/voices";
 import Image from 'next/image'
+import words from "./array/words"
 import {useState, useRef, useEffect} from 'react'
 
-const languageToVoiceMap: {[key: string]: string} = {
-  'English': 'Callum',
-  'French': 'Liam',
-  'Ukrainian': 'Alice'
-}
 
-const languagesRaw = Languages.map((language)=>{
- const voiceName =  languageToVoiceMap[language.name];
- const foundVoice = voices.find((voice) => voice.name === voiceName)
- return {
-  ...Languages , voiceId: foundVoice
- }
-})
+
+
 
 export default function Home() {
 
-  const [inputText, setInputText] = useState('')
+  // const [inputText, setInputText] = useState('')
   const [selectedLanguageId, setSelectedLanguageId] = useState(1)
   const [isVoicesVisible, setVoicesVisible] = useState(false)
-  const [selectedVoice, setSelectedVoice] = useState('')
+  const [selectedVoice, setSelectedVoice] = useState<string | null>(null)
+  const [selectedWord, setSelectedWord] = useState<string | null>(null)
+
+
+
+const Languagesfind = Languages.find((lang)=>lang.id === selectedLanguageId)
+const aviable = Languagesfind?.aviableVoice || []
+const aviableVoices = voices.filter(voic=> aviable.includes(voic.name)) 
+
+
+const WordsObject = words.find(word=>  word.name === Languagesfind?.name )
+const WordsText= WordsObject?.text || []
 
 
 
@@ -33,6 +35,7 @@ useEffect(()=>{
    if(dropdownContainerRef.current && !dropdownContainerRef.current.contains(event.target as Node)  ){
       setVoicesVisible(false)
       console.log('dropdownContainerRef ')
+      setSelectedWord(null)
    }
   }
    
@@ -45,14 +48,12 @@ useEffect(()=>{
 
 
 const handleSpeak = async ()=>{
-  const selectedLanguage = Languages.find( lang=> lang.id === selectedLanguageId)
-  if(selectedLanguage){
   const response = await fetch('./api/generate-speech',{
       method : 'POST' ,
       headers:{ 'Content-Type': 'application/json'},
       body: JSON.stringify({
-        text: inputText,
-        voiceId: selectedLanguage.voiceId
+        text: selectedWord,
+        voiceId: selectedVoice
       })
   })
   if(!response.ok){
@@ -62,26 +63,27 @@ const handleSpeak = async ()=>{
   const audioUrl = URL.createObjectURL(audioBlob)
   const audio = new Audio(audioUrl)
   audio.play()
-}
+
 }
 const pressButton = (id: number )=>{
  
   setSelectedLanguageId(id)
   setVoicesVisible(!isVoicesVisible)
+  setSelectedVoice(null)
 }
-const pressVoiceButton = (name: string)=>{
- setSelectedVoice(name)
+const voiceButton = (voiceId: string)=>{
+  setSelectedVoice(voiceId)
 }
 
   return (
     <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-       <div className="w-[450px]">
-       <input id="placeholder" value={inputText} onChange={(e)=> setInputText(e.target.value)} 
-       className=' w-[300px] h-[50px] pl-[10px] text-black  bg-white rounded-lg border  border-gray-500'placeholder="write text" ></input>
-    <button onClick ={handleSpeak} className='  gap-3 p-3 border rounded-lg transition-colors ' >speak</button>
-                 <div ref={dropdownContainerRef} className="mt-4 flex gap-4 items-start">
-  
+       <div ref={dropdownContainerRef} className="w-[450px]">
+      {/* <input id="placeholder" value={inputText} onChange={(e)=> setInputText(e.target.value)} 
+       className=' w-[300px] h-[50px] pl-[10px] text-black  bg-white rounded-lg border  border-gray-500'placeholder="write text" ></input> */}
+    
+                 <div  className="mt-4 flex gap-4 items-start">
+
 
   <ul className="space-y-2 w-[250px] flex-shrink-0">
     {Languages.map((Language) => (
@@ -104,6 +106,8 @@ const pressVoiceButton = (name: string)=>{
     ))}
   </ul>
 
+  
+
 
   <div 
     className={`transition-all duration-300 ease-in-out w-[150px] ${
@@ -111,17 +115,52 @@ const pressVoiceButton = (name: string)=>{
     }`}
   >
     <ul className="space-y-2">
-      {voices.map((voice) => (
+      {aviableVoices.map((voice) => (
         
         <li key={voice.voiceId}> 
-          <button onClick ={handleSpeak} className='w-full text-left p-3 border rounded-lg border-gray-700 hover:bg-gray-800'>
-            {voice.name  } 
+          <button onClick ={()=>voiceButton(voice.voiceId)}   className={`w-full text-left p-3 border rounded-lg transition-colors ${
+          selectedVoice === voice.voiceId 
+            ? 'bg-blue-500 border-blue-400' 
+            : 'border-gray-700 hover:bg-gray-800' 
+        }`}>
+            {voice.name } 
           </button>
         </li>
       ))}
     </ul>
-  </div>
 
+      
+
+
+
+  </div>
+  <div 
+    className={`transition-all duration-300 ease-in-out w-[150px] ${
+      isVoicesVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+    }`}
+  >
+<ul className="space-y-2">
+      {WordsText.map((Word) => (
+        
+        <li key={Word}> 
+          <button onClick ={()=>setSelectedWord(Word)} className={`w-full text-left p-3 border rounded-lg transition-colors ${
+          selectedWord === Word
+            ? 'bg-blue-500 border-blue-400'
+            : 'border-gray-700 hover:bg-gray-800'
+        }`}>
+            {Word } 
+          </button>
+        </li>
+      ))}
+    </ul>
+    </div>
+    <div 
+    className={`transition-all duration-300 ease-in-out w-[150px] ${
+      selectedWord !== null? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+    }`}
+  >
+    <button onClick ={handleSpeak} className='  gap-3 p-3 border rounded-lg transition-colors ' >speak</button>
+    </div>
 </div>
        </div>
       </main>
