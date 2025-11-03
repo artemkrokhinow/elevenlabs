@@ -18,7 +18,6 @@ export default function VoicesList({ onVoiceClick, selectedVoiceId, children, on
         <>
             {voices.map((voice) => {
                 const isSelected = selectedVoiceId === voice.voiceId;
-                const isFavorite = favoriteVoiceString.includes(voice.voiceId)
                 const langInfo = Languages.find((lang) => lang.aviableVoice.includes(voice.name));
 
                 return (
@@ -29,7 +28,7 @@ export default function VoicesList({ onVoiceClick, selectedVoiceId, children, on
                         >  <span style={{ display: 'flex', alignItems: 'center' }}>
                             <span>{voice.name}</span>
                             <FavoriteStar 
-                            isFavorite={isFavorite}
+                            isFavorite={favoriteVoiceString.includes(voice.voiceId)}
                             onToggle={(e)=>{
                                 e.stopPropagation();
                            onToggleFavorite(voice.voiceId)}}

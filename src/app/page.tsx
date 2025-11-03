@@ -11,19 +11,7 @@ export default function Home() {
   const [favoriteStars, setFavoriteStars] = useState<string[]>([])
   const [selectedWord, setSelectedWord] = useState<string | null>(null)
 
-/*
-  const dropdownContainerRef = useRef<HTMLDivElement>(null);
-  useEffect(()=>{
-    const handleClick = (event: MouseEvent)=>{
-     if(dropdownContainerRef.current && !dropdownContainerRef.current.contains(event.target as Node)  ){
-        console.log('dropdownContainerRef ')
-        setSelectedWord(null)
-     }
-    }
-    document.addEventListener("mousedown", handleClick)
-    console.log('useEffect')
-    return()=>document.removeEventListener("mousedown", handleClick)
-  },[]);*/
+
 
   const handleSpeak = async (inputText: string)=>{
     const response = await fetch('./api/generate-speech',{
@@ -62,9 +50,9 @@ export default function Home() {
     } else{
        return [...prev, voiceId]
     }})
-
+}
   return (
-     <div  className={styles.mainContainer}>
+    <div  className={styles.mainContainer}>
        <main className={styles.contentWrapper}>
             <VoicesList
                 onVoiceClick={handleVoiceClick}
@@ -100,5 +88,4 @@ export default function Home() {
         </main>
      </div>
   );
-}
 }
