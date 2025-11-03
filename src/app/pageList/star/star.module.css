@@ -1,0 +1,33 @@
+.favorite-button {
+  background: transparent;
+  border: none;
+  padding: 4px; 
+  margin-left: 8px;
+  cursor: pointer;
+  display: inline-flex; 
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.favorite-button:hover {
+  transform: scale(1.2);
+}
+
+.favorite-icon svg {
+  width: 20px;
+  height: 20px;
+  color: #94a3b8; 
+ 
+  transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+
+  transform: scale(1);
+  fill: none; 
+}
+
+.favorite-icon.favorited svg {
+  color: #facc15;
+  fill: #facc15;
+  transform: scale(1.1) rotate(15deg); 
+}

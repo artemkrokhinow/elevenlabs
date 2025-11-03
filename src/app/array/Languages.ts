@@ -3,7 +3,7 @@ const Languages = [
    {    'name': 'English', 
         'id': 1 ,
         'imageUrl': '/image/en.png',
-        'aviableVoice': ['Callum','Harry', 'Lily']},
+        'aviableVoice': ['Callum','Harry', 'Lily', 'Sarah']},
         
     {   'name':'French', 
         'id': 2 ,
