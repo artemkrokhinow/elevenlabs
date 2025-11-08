@@ -1,4 +1,4 @@
-const voices = [
+/* const voices = [
     {   'name': 'Callum',
         'voiceId': 'N2lVS1w4EtoT3dr4eOWO',
     },
@@ -37,4 +37,4 @@ const voices = [
         
     },
 ]
-export default voices
+export default voices */

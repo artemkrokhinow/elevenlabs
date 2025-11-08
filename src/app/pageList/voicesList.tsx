@@ -1,19 +1,44 @@
-import React, { MouseEvent } from 'react';
+"use client"
+import React, {useState, useEffect} from 'react';
 import Languages from "../array/Languages";
-import voices from "../array/voices";
 import Image from 'next/image';
 import styles from '../home.module.css';
 import FavoriteStar from "./star/FavoriteStar"
 
+
+export interface Voice {
+  voiceId: string;
+  name: string;
+  category: string;
+  previewUrl: string;
+}
 interface VoicesListProps {
     onVoiceClick: (voiceId: string) => void;
     selectedVoiceId: string | null;
     children: React.ReactNode;
     onToggleFavorite: (voiceId : string) => void;
     favoriteVoiceString: string[];
+    onVoicesLoaded: (loadedVoices: Voice[]) => void
 }
+ 
 
-export default function VoicesList({ onVoiceClick, selectedVoiceId, children, onToggleFavorite, favoriteVoiceString }: VoicesListProps) {
+export default function VoicesList({ onVoiceClick, selectedVoiceId, children, onToggleFavorite, favoriteVoiceString, onVoicesLoaded }: VoicesListProps) {
+const [voices, setVoices] = useState<Voice[]>([])
+
+
+    useEffect(()=>{
+     const fetchVoices = async ()=>{
+      const response = await fetch('./api/generate-speech',{
+          method : 'GET' })
+      
+      if(!response.ok){ throw new Error('fetch GET voices fail') } 
+      const data = await response.json()
+      setVoices(data)
+      onVoicesLoaded(data)
+       console.log(data)
+    }
+    fetchVoices()
+}, [])
     return (
         <>
             {voices.map((voice) => {
